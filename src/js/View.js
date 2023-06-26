@@ -439,6 +439,20 @@ export let View = (function () {
             });
     };
 
+    /**
+    * return Blob corresponding to the current view
+    */
+    View.prototype.getCanvasDataAsBlob = async function () {
+        const canvas = document.getElementById("canvas");
+
+        canvas.toBlob((blob) => {
+            console.log("blob: ", blob);
+            return blob;
+        });
+    };
+
+        
+
 
     View.prototype.setActiveHiPSLayer = function (layer) {
         if (!this.imageLayers.has(layer)) {

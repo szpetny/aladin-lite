@@ -1418,6 +1418,18 @@ export let Aladin = (function () {
     };
 
     /**
+    * return uint8array corresponding to the current view
+    */
+    Aladin.prototype.getCanvasDataAsArray = async function () {
+        const canvas = document.getElementsByClassName("aladin-imageCanvas")[0];
+        canvas.toBlob(async(blob) => {
+            let result = await blob.stream().getReader().read();
+            console.log(result.value);
+            return result.value;
+    });
+    };
+
+    /**
      * Return the current view as a data URL (base64-formatted string)
      * Parameters:
      * - options (optional): object with attributs

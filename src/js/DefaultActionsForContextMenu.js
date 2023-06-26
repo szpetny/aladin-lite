@@ -56,6 +56,15 @@ export let DefaultActionsForContextMenu = (function () {
                 label: "Take snapshot", action(o) { aladinInstance.exportAsPNG(); }
             },
             {
+                label: "Get Array", action(o) {aladinInstance.getCanvasDataAsArray();}
+            },
+            {
+                label: "Get FOV", action(o) {
+                    var fov = aladinInstance.getFov();
+                    console.log("fov: ", fov);
+                }
+            },
+            {
                 label: "Add",
                 subMenu: [
                     {
