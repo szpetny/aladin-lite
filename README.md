@@ -39,6 +39,8 @@ If you want to embed it into your webpage, please include [the javascript script
 </html>
 ```
 
+A beta version targeting the most recent changes in the `develop` branch is available at this url: https://aladin.cds.unistra.fr/AladinLite/api/v3/beta/aladin.js (i.e. replace latest in the url with beta). It is regularly updated but beware that this version is more able to contain bugs than the `latest` version.
+
 ## New features corner
 
 * Fits images drag and drop
