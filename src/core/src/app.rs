@@ -909,12 +909,12 @@ impl App {
             );*/
             moc.draw(camera, projection, shaders)?;
 
-            gl.blend_func_separate(
+            /*gl.blend_func_separate(
                 WebGl2RenderingContext::SRC_ALPHA,
                 WebGl2RenderingContext::ONE,
                 WebGl2RenderingContext::ONE,
                 WebGl2RenderingContext::ONE,
-            );
+            );*/
             grid.draw(camera, projection, shaders)?;
 
             //        Ok(())
