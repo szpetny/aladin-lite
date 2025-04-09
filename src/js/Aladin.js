@@ -2289,6 +2289,8 @@ export let Aladin = (function () {
             this.view.startSelection(mode, callback);
         } else if (what === "simbad") {
             this.view.setMode(View.TOOL_SIMBAD_POINTER);
+        } else if (what === "picker") {
+            this.view.setMode(View.TOOL_COLOR_PICKER);
         } else if (what === "default") {
             this.view.setMode(View.PAN);
         }

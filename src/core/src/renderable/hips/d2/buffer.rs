@@ -508,58 +508,57 @@ impl HpxTileBuffer for HiPS2DBuffer {
         // Get the array of textures from that survey
         let depth = camera.get_texture_depth().min(cfg.get_max_depth_texture());
 
-        // compute the tex
-        let (pix, dx, dy) = crate::healpix::utils::hash_with_dxdy(depth, &pos);
-        let texture_cell = HEALPixCell(depth, pix);
+        for d in (0..=depth).rev() {
+            // compute the tex
+            let (pix, dx, dy) = crate::healpix::utils::hash_with_dxdy(d, &pos);
+            let texture_cell = HEALPixCell(d, pix);
 
-        if let Some(texture) = self.get(&texture_cell) {
-            let cfg = self.config();
+            if let Some(texture) = self.get(&texture_cell) {
+                let cfg = self.config();
 
-            // Index of the texture in the total set of textures
-            let texture_idx = texture.idx();
+                // Index of the texture in the total set of textures
+                let texture_idx = texture.idx();
 
-            // The size of the global texture containing the tiles
-            let texture_size = cfg.get_texture_size();
+                // The size of the global texture containing the tiles
+                let texture_size = cfg.get_texture_size();
 
-            // Offset in the slice in pixels
-            let mut pos_tex = Vector3::new(
-                (dy * (texture_size as f64)) as i32,
-                (dx * (texture_size as f64)) as i32,
-                texture_idx,
-            );
+                // Offset in the slice in pixels
+                let mut pos_tex = Vector3::new(
+                    (dy * (texture_size as f64)) as i32,
+                    (dx * (texture_size as f64)) as i32,
+                    texture_idx,
+                );
 
-            // Offset in the slice in pixels
-            if cfg.tex_storing_fits {
-                let texture_size = cfg.get_texture_size() as f32;
-                let mut uvy = pos_tex.y as f32 / texture_size;
-                uvy = cfg.size_tile_uv + 2.0 * cfg.size_tile_uv * (uvy / cfg.size_tile_uv).floor()
-                    - uvy;
+                // Offset in the slice in pixels
+                if cfg.tex_storing_fits {
+                    let texture_size = cfg.get_texture_size() as f32;
+                    let mut uvy = pos_tex.y as f32 / texture_size;
+                    uvy = cfg.size_tile_uv + 2.0 * cfg.size_tile_uv * (uvy / cfg.size_tile_uv).floor()
+                        - uvy;
 
-                pos_tex.y = (uvy * texture_size) as i32;
+                    pos_tex.y = (uvy * texture_size) as i32;
+                }
+
+                let mut value = self
+                    .texture_2d_array
+                    .read_pixel(pos_tex.x, pos_tex.y, pos_tex.z)?;
+
+                if cfg.tex_storing_fits {
+                    // scale the value
+                    let f64_v = value
+                        .as_f64()
+                        .ok_or_else(|| JsValue::from_str("Error unwraping the pixel read value."))?;
+                    let scale = cfg.scale as f64;
+                    let offset = cfg.offset as f64;
+
+                    value = JsValue::from_f64(f64_v * scale + offset);
+                }
+
+                return Ok(value);
             }
-
-            let mut value = self
-                .texture_2d_array
-                .read_pixel(pos_tex.x, pos_tex.y, pos_tex.z)?;
-
-            if cfg.tex_storing_fits {
-                // scale the value
-                let f64_v = value
-                    .as_f64()
-                    .ok_or_else(|| JsValue::from_str("Error unwraping the pixel read value."))?;
-                let scale = cfg.scale as f64;
-                let offset = cfg.offset as f64;
-
-                value = JsValue::from_f64(f64_v * scale + offset);
-            }
-
-            Ok(value)
-        } else {
-            Err(JsValue::from_str(&format!(
-                "{:?} not loaded in the GPU, please wait before trying again.",
-                texture_cell
-            )))
         }
+
+        Ok(JsValue::undefined())
     }
 }
 

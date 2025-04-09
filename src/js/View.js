@@ -290,7 +290,7 @@ export let View = (function () {
     View.PAN = 0;
     View.SELECT = 1;
     View.TOOL_SIMBAD_POINTER = 2;
-
+    View.TOOL_COLOR_PICKER = 3;
 
     // TODO: should be put as an option at layer level
     View.DRAW_SOURCES_WHILE_DRAGGING = true;
@@ -465,6 +465,8 @@ export let View = (function () {
         else if (this.mode == View.SELECT) {
             this.setCursor('crosshair');
             this.aladin.showReticle(false)
+        } else if (this.mode == View.TOOL_COLOR_PICKER) {
+            this.setCursor('crosshair');
         }
 
         ALEvent.MODE.dispatchedTo(this.aladin.aladinDiv, {mode});

@@ -858,6 +858,8 @@ export let HiPS = (function () {
      * @returns {number} the value of that pixel
      */
     HiPS.prototype.readPixel = function (x, y) {
+        x = x || (this.view.width / 2);
+        y = y || (this.view.height / 2);
         return this.view.wasm.readPixel(x, y, this.layer);
     };
 
